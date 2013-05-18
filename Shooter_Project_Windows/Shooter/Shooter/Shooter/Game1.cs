@@ -77,6 +77,8 @@ namespace Shooter
         TimeSpan previousFireTime;
 
         bool Playing;
+        enum gameState { start, playing, end };
+        gameState state;
 
         public Game1()
         {
@@ -89,7 +91,7 @@ namespace Shooter
         protected override void Initialize()
         {
             Playing = false;
-
+            gameState state = gameState.start;
             explosions = new List<Animation>();
 
             //Set player's score to zero
@@ -184,17 +186,17 @@ namespace Shooter
 
         protected override void Update(GameTime gameTime)
         {
-            if (Playing == false)
+            if (state==gameState.start)
             {
                 currentKeyboardState = Keyboard.GetState();
 
                 if (currentKeyboardState.IsKeyDown(Keys.Enter))
                 {
 
-                    Playing = true;
+                    state=gameState.playing;
                 }
             }
-            else
+            else if(state==gameState.playing)
             {
                 // Allows the game to exit
                 if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -236,14 +238,14 @@ namespace Shooter
 
         protected override void Draw(GameTime gameTime)
         {
-            if (Playing == false)
+            if (state==gameState.start)
             {
                 spriteBatch.Begin();
                 spriteBatch.DrawString(font, "Last score: " + lastScore, new Vector2((GraphicsDevice.Viewport.Width+23)/3, GraphicsDevice.Viewport.Height-250), Color.PeachPuff);
                 spriteBatch.DrawString(font, "Press enter to start", new Vector2((GraphicsDevice.Viewport.Width+23)/3, GraphicsDevice.Viewport.Height-280), Color.DarkGoldenrod);
                 spriteBatch.End();
             }
-            else
+            else if(state==gameState.playing)
             {
 
                 GraphicsDevice.Clear(Color.CornflowerBlue);
